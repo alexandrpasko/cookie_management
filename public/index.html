@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,600%7cPlayfair+Display:400&display=swap" rel="stylesheet">
+	<title>Assignment 2, Intermediate JavaScript</title>
+	<style>
+		body{
+			margin: 0px;
+			padding: 20px;
+			min-height: 100vh;
+			font-family: Montserrat, Arial, Helvetica, sans-serif;
+			background-image: url(bg_image.jpg);
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+		}
+		/* styles for date and time */
+		div#date_container{
+			margin: 0px auto;
+			width: 850px;
+			background-color: rgba(0,0,0,0.8);
+			padding: 20px;
+		}
+		p#dateShow{
+			color: #fff;
+			font-size: 2em;
+			margin: 10px 80px 10px 50px ;
+		}
+		#dateShow span{
+			position: absolute;
+			color:#ffb36b;
+			font-size:1.3em;
+			margin-left: 30px;
+		}
+		#dateShow span.am_pm{
+			margin-left: 210px;
+		}
+
+		/* styles for form */
+		div#container{
+			margin: 0px auto;
+			width: 850px;
+			/* background-color: rgba(200, 200, 200, 0.8); */
+			background-color: rgba(255, 255, 255, 0.8);
+			padding: 20px;
+		}
+		h1{
+			margin-top: 10px;
+			text-align: center;
+	    }
+	    h2{
+	      font-size: 1.2em;
+	      font-weight: 400;
+	      margin-bottom: 40px;
+	      text-align: center;
+	    }
+	    fieldset{
+	      width: 380px;
+	      border: none;
+	      float: left;
+	      padding: 0px;
+	    }
+	    fieldset + fieldset{
+	      float: right;
+	    }
+	    legend{
+	      margin-bottom: 20px;
+	      font-weight: 600;
+	    }
+	    .clear_both{
+	      clear: both;
+	    }
+	    label{
+	      font-size: 0.9em;
+	      font-weight: 600;
+	      clear: both;
+	      width: 140px;
+	      display: block;
+	      float: left;
+	    }
+	    label.required:before{
+	    	content: "* ";
+	    	font-size: 1.2em;
+				animation: rotation 8s linear infinite;
+	    }
+	    input, textarea{
+	      width: 230px;
+	      height: 24px;
+	      border: 1px solid #d4d4d4;
+	    }
+	    input:hover, textarea:hover{
+	      background-color: #e4e4e4;
+	      border: 1px solid #0e0e0e;
+	    }
+	    input[type="submit"],
+	    input[type="reset"]{
+	      font-family: Montserrat, Arial, Helvetica, sans-serif;
+	      text-transform: uppercase;
+	      font-weight: 400;
+	      letter-spacing: 0.1em;
+	      background-color: #2a4e26;
+	      width: 120px;
+	      border-radius: 20px;
+	      height: 38px;
+	      font-size: 0.9em;
+	      color: #fff;
+	      text-align: center;
+	      margin: 30px 0px 20px 0px;
+	      margin-bottom: 30px;
+	      -webkit-transition: all 0.2s ease;
+	      transition: all 0.2s ease;
+	      border: none;
+	    }
+	    button{
+	    	font-family: Montserrat, Arial, Helvetica, sans-serif; 
+	    	text-transform: uppercase;
+	    	font-weight: 600;
+	    	letter-spacing: 0.1em;
+	    	padding: 10px;
+	    	color: #555;
+	    	border: 2px solid #555;
+	    	float: right;
+	    	margin-top: -65px;
+	    	margin-right: 10px;
+	    	background-color: rgba(0,0,0,0);
+	    }
+	    button#link{
+	    	margin-right: 170px;
+	    }
+	    button:hover{
+	    	background-color: rgba(0,0,0,0.8);
+	    	color: #fff;
+	    }
+
+	    input[type="reset"]{
+	      background-color: #db843d;
+	      color: #fff;
+	      margin-left: 20px;
+	    }
+	    input[type="submit"]:hover,
+	    input[type="reset"]:hover{
+	      background-color: #0e0e0e;
+	      color: #1CA800;
+	    }
+	    input[type="reset"]:hover{
+	    	color: #F09800;
+	    }
+	    fieldset span{
+	    	display: block;
+	    	padding-right: 12px;
+	    	text-align: right;
+	    	font-size: 0.8em;
+	    	color: #FF0000;
+	    }
+		
+	</style>
+</head>
+
+<!--
+
+   ALEXAN    DR         PASKOALE   XA     ND    RPASKO    AL    EX   ANDRPA     SKOALEX 
+  AL    EX   AN         DR          PA   SK    OA    LE   XAN   DR   PA   SK    OA    LE
+  AL    EX   AN         DR           PA SK     OA    LE   XAND  RP   AS    KO   AL    EX
+  ALEXANDR   PA         SKOALEXA      NDR      PASKOALE   XA ND RP   AS    KO   ALEXAND
+  AL    EX   AN         DR           PA SK     OA    LE   XA  NDRP   AS    KO   AL  EX 
+  AL    EX   AN         DR          PA   SK    OA    LE   XA   NDR   PA   SK    OA   LE
+  AL    EX   ANDRPASK   OALEXAND   RP     AS   KO    AL   EX    AN   DRPASK     OA    LE
+
+
+  ALEXAND     RPASKO     ALEXAND   RP    AS    KOALEX
+  AL    EX   AN    DR   PA         SK   OA    LE    XA
+  AL    EX   AN    DR   PA         SK  OA     LE    XA 
+  ALEXAND    RP    AS    KOALEX    ANDRP      AS    KO
+  AL         EXANDRPA         SK   OA  LE     XA    ND
+  AL         EX    AN         DR   PA   SK    OA    LE
+  AL         EX    AN   DRPASKO    AL    EX    ANDRPA
+ 
+id="Alexandr_Pasko_Web_Development_Diploma_2019";
+font-family: "ALEXANDR_PASKO", "no_need_backup_runs_everywhere";
+Cool font, hey?
+-->
+
+<body>
+	
+	<div id="date_container">
+		<p id="dateShow"></p>
+	</div>
+
+	<div id="container">
+    <h1>Become a Honorable Winnipeger</h1>
+    <h2>There are only two options, you are either with us or against us. We wish you make a right decision.</h2>
+   
+    <form onsubmit="return validateForm(this);" 
+	    		id="first_form"
+	        name="first-form"
+	        action="http://www.scott-media.com/test/form_display.php"
+	        method="post"
+	        autocomplete="on"
+	        target="blank" 
+	        novalidate>
+
+      <fieldset>  <!--first block-->
+        <legend>Personal Info</legend>
+        <p>
+          <label class="required" for="first_name">First name: </label>
+          <input onchange="checkFirstName(form)" 
+          			 type="text"
+                 id="first_name" 
+                 name="first_name"
+                 required="required">
+          <span id="msName"></span>  
+        </p>
+        <p>
+          <label class="required" for="last_name">Last name: </label>
+          <input onchange="checkLastName(form)"
+          			 type="text"
+                 id="last_name"
+                 name="last_name"
+                 required="required">
+          <span id="msLastName"></span> 
+        </p>
+        <p>
+          <label class="required" for="email">Email: </label>
+          <input onchange="checkEmail(form)"
+          			 type="email"
+                 id="email"
+                 name="email">
+          <span id="msEmail"></span> 
+        </p>
+        <p>
+          <label class="required" for="phone_number">Phone number: </label>
+          <input onchange="checkPhoneNumber(form)"
+          			 type="text"
+                 id="phone_number"
+                 name="phone_number">
+          <span id="msPhone"></span> 
+        </p>   
+      </fieldset> 
+
+      <fieldset><!-- second block -->
+        <legend>Additional Info</legend>
+
+        <p>
+          <label class="required" for="postal_code">Postal Code:</label>
+          <input class="required" onchange="checkPostalCode(form)"
+          			 type="text"
+                 id="postal_code" 
+                 name="postal_code"
+                 required="required">
+          <span id="msPostal"></span> 
+        </p>
+
+        <p>
+          <label for="url">Full URL:</label>
+          <input onchange="checkURL(form)"
+          			 type="text"
+                 id="url" 
+                 name="url"
+                 required="required"> 
+          <span id="msURL"></span>
+        </p>
+
+        <p>
+          <label for="age">Age:</label>
+          <input onchange="checkAge(form)"
+          			 type="number"
+                 id="age" 
+                 name="age"
+                 required="required">
+          <span id="msAge"></span>        
+        </p>
+
+        <p>
+          <label for="date">Date:</label>
+          <input type="date"
+                 id="date"
+                 name="date">
+        </p>               
+      </fieldset>
+
+      <div class="clear_both"></div>
+
+      <input type="submit" value="Submit">
+      <input type="reset" value="Clear">
+      
+    </form>
+
+    <button onclick="setCookies()">Save Cookies</button>
+    <button id="link" onclick="openCookiesPage()">Show Cookies</button>
+
+  </div>
+
+
+	<script type="text/javascript">
+		
+		//declare global variables
+		var valid = true;//form valid or not
+		var form = document.first_form;//short access to the form
+		var firstEffort = false;//identifies when submit button is pushed (to avoid single function from running "onchange" before the first effort to submit the form)
+		var checkSubmit = false;//prevents cookies from writing unless the form has been submitted
+		var time = runningTime();//for running function
+
+		//generate date and time
+		function runningTime(){
+			var d = new Date();//object with all data needed
+			var full_year = d.getFullYear();//year
+			var date = d.getDate();//date
+			var month = d.getMonth();//month index
+			var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+			var day = d.getDay();//weekday
+			var week_days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thirsday', 'Friday', 'Suturday'];
+			var hour = d.getHours();//hour (0-24)
+			if(hour > 12){
+				var hour = hour - 12;
+				var suffix = 'PM';
+			}else{
+				var suffix = 'AM'
+			}
+			if(hour < 10){
+				hour = '0' + hour;
+			}
+
+			var minuts = d.getMinutes();//minuts (0-60)
+			if(minuts < 10){
+				minuts = '0' + minuts;
+			}
+			var seconds = d.getSeconds();
+			if(seconds < 10){
+				seconds = '0' + seconds;
+			}
+
+			document.getElementById('dateShow').innerHTML = week_days[day] + ', ' + date + ' ' + months[month] + ' ' + full_year + ' <span>' + hour + ':' + minuts + ':' + seconds + '</span> <span class="am_pm"> ' + suffix + '</span>';
+
+			//runs the function every second
+			var repeat = setTimeout('runningTime()', 1000);
+		}//function running time ends
+		
+		function validateForm(form)
+		{
+			//will stay true if form validates througout
+			valid = true;
+			firstEffort = true;
+
+			//each function validates one field
+			checkFirstName(form);
+			checkLastName(form);
+			checkEmail(form);
+			checkPhoneNumber(form);
+			checkPostalCode(form);
+			checkURL(form);
+			checkAge(form);
+
+			console.log(valid);
+
+			//allows cookies to be written
+			console.log(checkSubmit);
+			if(valid === true){
+				checkSubmit = true;
+			}
+			console.log(checkSubmit);
+
+			return valid;
+		}
+
+		//validate First Name
+		function checkFirstName(form)
+		{
+			//first, check if submit button was already pushed (to avoid running "onchange" before submittion)
+			if(firstEffort === false){
+				return false;
+			}
+
+			var name = form.first_name.value;
+			if(name.length < 2){
+				document.getElementById('msName').innerHTML = 'Please fill out this field with your name';
+				document.getElementsByTagName('input')[0].style.border = '1px solid #f00';
+				valid = false;
+			}else{
+				document.getElementById('msName').innerHTML = '';
+				document.getElementsByTagName('input')[0].style.border = '1px solid #d4d4d4';
+			}
+		}
+
+		//validate Last Name
+		function checkLastName(form)
+		{
+
+			//first, check if submit button was already pushed (to avoid running "onchange" before submittion)
+			if(firstEffort === false){
+				return false;
+			}
+
+			var lastName = form.last_name.value;
+			if(lastName.length < 2){
+				document.getElementById('msLastName').innerHTML = 'Please fill out this field with your last name';
+				document.getElementsByTagName('input')[1].style.border = '1px solid #f00';
+				valid = false;
+			}else{
+					document.getElementById('msLastName').innerHTML = '';
+					document.getElementsByTagName('input')[1].style.border = '1px solid #d4d4d4';
+			}
+		}
+
+		//validate email
+		function checkEmail(form)
+		{
+
+			//first, check if submit button was already pushed (to avoid running "onchange" before submittion)
+			if(firstEffort === false){
+				return false;
+			}
+
+			var email = form.email.value;
+			if(email.indexOf('@') < 1 || email.indexOf('@') > email.length - 3 ){
+				document.getElementById('msEmail').innerHTML = 'Please enter a valid email (ex: email@gmail.com)';
+				document.getElementsByTagName('input')[2].style.border = '1px solid #f00';
+				valid = false;
+			}else if(email.indexOf('.') < 1 || email.indexOf('.') > email.length - 3 ){
+				document.getElementById('msEmail').innerHTML = 'Please enter a valid email (ex: email@gmail.com)';
+				document.getElementsByTagName('input')[2].style.border = '1px solid #f00';
+				valid = false;
+			}else{
+				document.getElementById('msEmail').innerHTML = '';
+				document.getElementsByTagName('input')[2].style.border = '1px solid #d4d4d4';
+			}
+		}
+
+		//validate phone number
+		function checkPhoneNumber(form)
+		{
+
+			//first, check if submit button was already pushed (to avoid running "onchange" before submittion)
+			if(firstEffort === false){
+				return false;
+			}
+
+			var number = form.phone_number.value;
+			if(number.length !== 12){
+				document.getElementById('msPhone').innerHTML = 'Please enter your phone number (ex: 204-777-7777)';
+				document.getElementsByTagName('input')[3].style.border = '1px solid #f00';
+				valid = false;
+			}else if(number.charAt(3) !== '-' || number.charAt(7) !== '-'){
+				document.getElementById('msPhone').innerHTML = 'Please enter your phone number (ex: 204-777-7777)';
+				document.getElementsByTagName('input')[3].style.border = '1px solid #f00';
+				valid = false;
+			}else{
+				document.getElementById('msPhone').innerHTML = '';
+				document.getElementsByTagName('input')[3].style.border = '1px solid #d4d4d4';
+			}
+		}
+
+		//validate postal code
+		function checkPostalCode(form)
+		{
+
+			//first, check if submit button was already pushed (to avoid running "onchange" before submittion)
+			if(firstEffort === false){
+				return false;
+			}
+
+			var postal = form.postal_code.value;
+			if(postal.length !== 6 || postal.indexOf(' ') >= 0){
+				document.getElementById('msPostal').innerHTML = 'Please enter your postal code (ex: R3N1Z3)';
+				document.getElementsByTagName('input')[4].style.border = '1px solid #f00';
+				valid = false;
+			}else{
+				document.getElementById('msPostal').innerHTML = '';
+				document.getElementsByTagName('input')[4].style.border = '1px solid #d4d4d4';
+			}
+		}
+
+		//validate URL
+		function checkURL(form)
+		{
+
+			//first, check if submit button was already pushed (to avoid running "onchange" before submittion)
+			if(firstEffort === false){
+				return false;
+			}
+
+			var url = form.url.value;
+
+			if(url.length > 0){
+				if(url.indexOf('http://') === 0 || url.indexOf('https://') === 0){
+					document.getElementById('msURL').innerHTML = '';
+					document.getElementsByTagName('input')[5].style.border = '1px solid #d4d4d4';
+				}else{
+					document.getElementById('msURL').innerHTML = 'URL must start with "http://" or "https://"';
+					document.getElementsByTagName('input')[5].style.border = '1px solid #f00';
+					valid = false;
+				}
+			}else{
+				document.getElementById('msURL').innerHTML = '';
+				document.getElementsByTagName('input')[5].style.border = '1px solid #d4d4d4';
+			}
+		}
+
+		//validate age
+		function checkAge(form)
+		{
+
+			//first, check if submit button was already pushed (to avoid running "onchange" before submittion)
+			if(firstEffort === false){
+				return false;
+			}
+			
+			var age = form.age.value;
+			if(age.length > 0){
+				age = parseInt(age);
+				if(age < 18){
+					document.getElementById('msAge').innerHTML = 'We are sorry, your age must be at least 18';
+					document.getElementsByTagName('input')[6].style.border = '1px solid #f00';
+					valid = false;
+				}else if(isNaN(age)){
+					document.getElementById('msAge').innerHTML = 'The age has to be a number';
+					document.getElementsByTagName('input')[6].style.border = '1px solid #f00';
+					valid = false;
+				}else{
+					document.getElementById('msAge').innerHTML = '';
+					document.getElementsByTagName('input')[6].style.border = '1px solid #d4d4d4';
+				}
+			}else{
+				document.getElementById('msAge').innerHTML = '';
+				document.getElementsByTagName('input')[6].style.border = '1px solid #d4d4d4';
+			}
+		}
+
+		//finction to set cookies
+		function setCookies()
+		{
+			if(checkSubmit === false){
+				alert('Form has NOT been submitted yet. Please do it first.');
+				return false;
+			}
+			var form = document.getElementById('first_form');
+			var expiryDate = new Date();
+			expiryDate.setFullYear(expiryDate.getFullYear()+2);
+			//delete_date.setFullYear(delete_date.getFullYear()-1);
+
+			if(form.first_name.value.length !== 0){
+				document.cookie = 'First Name=' + encodeURIComponent(form.first_name.value) + ';expires=' + expiryDate.toUTCString();
+			}
+			if(form.last_name.value.length !== 0){
+				document.cookie = 'Last Name=' + encodeURIComponent(form.last_name.value) + ';expires=' + expiryDate.toUTCString();
+			}
+			if(form.email.value.length !== 0){
+				document.cookie = 'Email=' + encodeURIComponent(form.email.value) + ';expires=' + expiryDate.toUTCString();
+			}
+			if(form.phone_number.value.length !== 0){
+				document.cookie = 'Phone Number=' + encodeURIComponent(form.phone_number.value) + ';expires=' + expiryDate.toUTCString();
+			}
+			if(form.postal_code.value.length !== 0){
+				document.cookie = 'Postal Code=' + encodeURIComponent(form.postal_code.value) + ';expires=' + expiryDate.toUTCString();
+			}
+			if(form.url.value.length !== 0){
+				document.cookie = 'URL=' + encodeURIComponent(form.url.value) + ';expires=' + expiryDate.toUTCString();
+			}
+			if(form.age.value.length !== 0){
+				document.cookie = 'Age=' + encodeURIComponent(form.age.value) + ';expires=' + expiryDate.toUTCString();
+			}
+
+			//alert if some cookie have been saved
+			if(document.cookie.length > 0){
+				alert('Cookies have been saved');
+			}else{
+				alert('something went wrong');
+			}
+			console.log(document.cookie);
+		}
+
+		//function to open page with cookies data
+		function openCookiesPage(){
+			window.location = 'cookies.html';
+		}
+
+
+	</script>
+</body>
+</html>

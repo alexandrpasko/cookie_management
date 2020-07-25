@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,600%7cPlayfair+Display:400&display=swap" rel="stylesheet">
+	<title>Assignment 2, Cookies</title>
+	<style type="text/css">
+
+		body{
+			margin: 0px;
+			padding: 20px;
+			font-family: Montserrat, Arial, Helvetica, sans-serif;
+			min-height: 90vh;
+			background-image: url(bg_cookies.jpg);
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+		}
+
+		/* styles for date and time */
+		div#date_container{
+			margin: 0px auto;
+			width: 890px;
+			background-color: rgba(0,0,0,0.8);
+			padding: 20px;
+			box-sizing: border-box;
+			margin-top: 40px;
+		}
+
+		p#date{
+			color: #fff;
+			font-size: 2em;
+			margin: 10px 80px 10px 50px ;
+		}
+		#date span{
+			position: absolute;
+			color:#ffb36b;
+			font-size:1.3em;
+			margin-left: 30px;
+		}
+		#date span.am_pm{
+			margin-left: 210px;
+		}
+
+		div{
+			margin: 0px auto;
+			width: 890px;
+			position: relative;
+		}
+		table{
+			background-color: rgba(255,255,255,0.8);
+			border-collapse: collapse;
+			width: 100%;
+			box-sizing: border-box;
+			margin-bottom: 40px;
+		}
+		th,td{
+			border: 1px solid #000;
+			text-align: center;
+			padding: 15px;
+		}
+		th{
+			background-color: rgba(100,100,100,0.8);
+		}
+		button{
+			font-family: Montserrat, Arial, Helvetica, sans-serif;
+			color: #fff;
+			padding: 10px;
+			text-transform: uppercase;
+			font-weight: 600;
+			letter-spacing: 0.1em;
+			border: 2px solid #fff;
+			background-color: rgba(0,0,0,0);	
+			position: absolute;	
+			left: 250px;	
+		}
+		button:hover{
+			color: #f00;
+			border-color: #f00;
+		}
+		button#link{
+			left:450px;
+			padding: 10px 40px;
+		}
+		button#link:hover{
+			color: #0f0;
+			border-color: #0f0;
+		}
+	</style>
+
+</head>
+<body>
+
+	<div id="date_container">
+		<p id="date"></p>
+	</div>
+	
+	<div id="container">
+
+		<table id="table"></table>
+
+		<button onclick="deleteCookies()">Delete Cookies</button>
+
+		<button id="link" onclick="linkForm()">See Form</button>
+
+	</div>
+
+<script type="text/javascript">
+	
+	//declare global variables
+	var formCookies = getCookies(document.cookie);//obtain object with keys and cookies
+	var num = 1;//for first column in the table, so that the list can be numbered
+
+	//content for a cookie table
+	var tableContent = document.getElementById('table').innerHTML = writeContent();
+
+	var time = runningTime(); 
+
+	//generate date and time
+	function runningTime(){
+		var d = new Date();//object with all data needed
+		var full_year = d.getFullYear();//year
+		var date = d.getDate();//date
+		var month = d.getMonth();//month index
+		var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		var day = d.getDay();//weekday
+		var week_days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thirsday', 'Friday', 'Suturday'];
+
+		var hour = d.getHours();//hour (0-24)
+		if(hour > 12){
+			var hour = hour - 12;
+			var suffix = 'PM';
+		}else{
+			var suffix = 'AM'
+		}
+		if(hour < 10){
+			hour = '0' + hour;
+		}
+
+		var minuts = d.getMinutes();//minuts (0-60)
+		if(minuts < 10){
+			minuts = '0' + minuts;
+		}
+		var seconds = d.getSeconds();
+		if(seconds < 10){
+			seconds = '0' + seconds;
+		}
+
+		document.getElementById('date').innerHTML = week_days[day] + ', ' + date + ' ' + months[month] + ' ' + full_year + ' <span>' + hour + ':' + minuts + ':' + seconds + '</span> <span class="am_pm">' + suffix + '</span>';
+		var repeat = setTimeout('runningTime()', 1000);
+	}//function running time ends
+
+	//function generates content for a cookie table 
+	function writeContent()
+	{
+		var content = '';
+		content += '<tr><th>Number</th><th>Cookie Name</th><th>Cookie Value</th></tr>';
+		for(var i in formCookies){
+			content += '<tr><td>' + num + '</td><td>' + i + '</td><td>' + formCookies[i] + '</td></tr>'
+			console.log(formCookies[i]);
+			num ++;
+		}
+		return content;
+	}
+
+	
+	//function to extract keys and values from cookies string
+	function getCookies()
+	{
+		if(document.cookie.length > 0){
+
+			var cookie_array = document.cookie.split(';');
+
+			var baked_cookies = [];
+
+			for(var i in cookie_array){
+				//extract cookie at i'th index, and assign to variable cookie; 
+				var cookie = cookie_array[i];
+
+				var split_cookie = cookie.split('=');
+				
+				var key = split_cookie[0].trim();// name is a string
+				var value = split_cookie[1].trim();// value is a string
+				
+				baked_cookies[key] = decodeURIComponent(value);
+			}
+			//if no cookies, return false
+			return baked_cookies;
+		}else{
+			return false;
+		}
+	}// end getCookies()
+
+	function deleteCookies()
+	{
+		var sure = confirm('Are you sure you want to delete cookies?');
+		if(sure === true){
+			//set an expiry date in the past
+			var delete_date =  new Date();
+			delete_date.setFullYear(delete_date.getFullYear()-1);
+			//add an expiry date to all strings
+			document.cookie = 'First Name=;expires=' + delete_date.toUTCString();
+			document.cookie = 'Last Name=;expires=' + delete_date.toUTCString();
+			document.cookie = 'Email=;expires=' + delete_date.toUTCString();
+			document.cookie = 'Phone Number=;expires=' + delete_date.toUTCString();
+			document.cookie = 'Postal Code=;expires=' + delete_date.toUTCString();
+			document.cookie = 'URL=;expires=' + delete_date.toUTCString();
+			document.cookie = 'Age=;expires=' + delete_date.toUTCString();
+			window.location.reload();
+		}
+	}
+
+	function linkForm(){
+		window.location = 'index.html';
+	}
+
+</script>
+
+</body>
+</html>
